@@ -10,14 +10,15 @@
     <style>
         /* --- CSS VARIABLES & RESET --- */
         :root {
-            --primary: #2563EB;      /* Biru Utama */
-            --secondary: #1D4ED8;    /* Biru Gelap (Gradient) */
-            --bg: #F3F4F6;           /* Background Halaman (Abu muda) */
-            --white: #FFFFFF;        /* Warna Kartu */
-            --icon-bg: #EFF6FF;      /* Background Icon (Biru sangat muda) */
-            --text: #1F2937;         /* Warna Teks Utama */
-            --gray: #6B7280;         /* Warna Teks Sekunder */
-            --radius-card: 20px;     /* Lengkungan Sudut Kartu */
+            --primary: #2563EB;      
+            --secondary: #1D4ED8;    
+            --bg: #F3F4F6;           
+            --white: #FFFFFF;        
+            --icon-bg: #EFF6FF;      
+            --text: #1F2937;         
+            --gray: #6B7280;         
+            --radius-card: 20px;     
+            --max-width: 1000px; /* Lebar maksimal konsisten */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
@@ -28,26 +29,74 @@
         header {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: var(--white);
-            padding: 25px 20px 80px 20px;
+            padding-top: 25px;
+            padding-bottom: 80px; 
             border-bottom-left-radius: 35px;
             border-bottom-right-radius: 35px;
             position: relative;
             box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
+            
+            /* PERBAIKAN: Agar Header sejajar dengan search & konten */
+            max-width: var(--max-width);
+            margin: 0 auto; /* Posisi tengah */
+            width: 100%;
         }
 
-        .header-top { display: flex; justify-content: space-between; align-items: flex-start; }
-        .logo h1 { font-size: 1.5rem; font-weight: 700; }
-        .logo p { font-size: 0.75rem; opacity: 0.9; }
+        .header-content {
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .logo h1 { 
+            font-size: 1.6rem; 
+            font-weight: 700; 
+            letter-spacing: 0.5px; 
+            display: flex;
+            align-items: center;
+        }
+        
+        /* Styling Icon HP di Header */
+        .logo h1 i {
+            font-size: 1.3rem;
+            margin-right: 10px;
+            background: rgba(255,255,255,0.2);
+            padding: 8px;
+            border-radius: 12px;
+        }
+
+        .logo p { 
+            font-size: 0.8rem; 
+            opacity: 0.95; 
+            margin-top: 8px; 
+            font-weight: 300; 
+            max-width: 280px;
+            line-height: 1.4;
+        }
+
+        .notif-btn {
+            background: rgba(255,255,255,0.2);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            margin-left: 10px;
+        }
 
         /* --- SEARCH BAR --- */
         .search-wrapper {
             position: absolute;
             bottom: -25px;
-            left: 20px;
-            right: 20px;
-            max-width: 800px;
-            margin: 0 auto;
+            left: 0;
+            right: 0;
+            padding: 0 20px; /* Padding agar lurus dengan tepi header */
         }
+        
         .search-box {
             background: var(--white);
             border-radius: 15px;
@@ -55,16 +104,22 @@
             align-items: center;
             padding: 15px 20px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            width: 100%; /* Penuh mengikuti wrapper */
         }
         .search-box input { border: none; width: 100%; outline: none; margin-left: 10px; color: var(--text); font-size: 0.95rem; }
 
-        /* --- CONTAINER --- */
-        .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; margin-top: 50px; }
+        /* --- MAIN CONTAINER --- */
+        .container { 
+            max-width: var(--max-width); 
+            margin: 0 auto; 
+            padding: 0 20px; 
+            margin-top: 50px; 
+        }
 
         .section-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
         .see-all { color: var(--primary); font-size: 0.85rem; cursor: pointer; }
 
-        /* --- CATEGORY GRID (Updated: Sama Warna dengan Bawah) --- */
+        /* --- CATEGORY GRID --- */
         .cat-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -73,86 +128,88 @@
         }
 
         .cat-item {
-            background: var(--white); /* Background Putih (Sama kayak bawah) */
+            background: var(--white);
             padding: 15px;
             border-radius: var(--radius-card);
             display: flex;
             align-items: center;
             cursor: pointer;
             transition: 0.2s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05); /* Shadow sama kayak bawah */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
             border: 1px solid transparent;
         }
         
         .cat-item:active { transform: scale(0.97); }
         .cat-item:hover { transform: translateY(-3px); }
 
-        /* Icon Style (Sama kayak bawah) */
         .cat-icon { 
-            width: 45px; 
-            height: 45px; 
-            background: var(--icon-bg); /* Biru Muda */
-            color: var(--primary);      /* Icon Biru */
+            width: 45px; height: 45px; 
+            background: var(--icon-bg); 
+            color: var(--primary);      
             border-radius: 12px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            margin-right: 12px; 
-            font-size: 1.2rem; 
+            display: flex; align-items: center; justify-content: center; 
+            margin-right: 12px; font-size: 1.2rem; 
         }
 
         .cat-text h4 { font-size: 0.9rem; font-weight: 600; color: var(--text); }
         .cat-text span { font-size: 0.7rem; display: block; color: var(--gray); margin-top: 2px; }
 
-        /* --- APP GRID (TAMPILAN BAWAH) --- */
+        /* --- APP GRID --- */
         .app-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* Mobile 2 Kolom */
+            grid-template-columns: repeat(2, 1fr);
             gap: 15px;
         }
         @media (min-width: 768px) { .app-grid { grid-template-columns: repeat(4, 1fr); } }
 
         .app-card {
             background: var(--white);
-            padding: 20px;
+            padding: 15px;
             border-radius: var(--radius-card);
-            text-align: center;
+            text-align: left;
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
             transition: transform 0.2s;
             cursor: pointer;
             display: flex;
             flex-direction: column;
-            align-items: center;
             text-decoration: none;
             position: relative;
         }
         .app-card:hover { transform: translateY(-5px); }
 
-        .app-icon {
-            width: 60px;
-            height: 60px;
-            background: var(--icon-bg); /* Sama dengan icon kategori */
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            color: var(--primary); /* Sama dengan icon kategori */
+        .app-icon-img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 22%;
+            object-fit: cover;
             margin-bottom: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background-color: #eee;
         }
-        .app-title { font-weight: 600; font-size: 0.95rem; color: var(--text); margin-bottom: 4px; line-height: 1.3; }
-        .app-ver { font-size: 0.75rem; color: var(--gray); }
+
+        .app-title { 
+            font-weight: 500; 
+            font-size: 0.9rem; 
+            color: var(--text); 
+            margin-bottom: 4px; 
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            height: 2.6em;
+        }
+        
+        .app-ver { font-size: 0.75rem; color: var(--gray); display: flex; align-items: center; }
+        .star-rating { font-size: 0.7rem; margin-right: 5px; color: #5f6368; }
         
         .badge {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #10B981;
-            color: white;
-            font-size: 0.6rem;
-            padding: 2px 6px;
-            border-radius: 6px;
-            font-weight: 600;
+            top: 10px; left: 10px;
+            background: #10B981; color: white;
+            font-size: 0.6rem; padding: 2px 6px;
+            border-radius: 6px; font-weight: 600;
+            z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         footer { text-align: center; margin-top: 50px; font-size: 0.8rem; color: var(--gray); margin-bottom: 20px; }
@@ -162,73 +219,57 @@
 
     <!-- HEADER -->
     <header>
-        <div class="header-top">
+        <div class="header-content">
             <div class="logo">
-                <h1>APPWUS</h1>
-                <p>Temukan aplikasi  yang membawa manfaat setiap hari</p>
+                <!-- ICON HANDPHONE DI SINI -->
+                <h1><i class="fas fa-mobile-screen-button"></i> APPWUS</h1>
+                <p>Solusi digital modern yang cepat dan aman. aplikasi dirancang untuk menunjang aktivitas sehari-hari Anda</p>
             </div>
-            <i class="fas fa-bell" style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 50%; cursor: pointer;"></i>
+            <div class="notif-btn">
+                <i class="fas fa-bell"></i>
+            </div>
         </div>
         
         <!-- SEARCH -->
         <div class="search-wrapper">
             <div class="search-box">
                 <i class="fas fa-search" style="color: #9CA3AF"></i>
-                <input type="text" id="searchInput" placeholder="Cari aplikasi..." onkeyup="filterApps()">
+                <input type="text" id="searchInput" placeholder="Cari aplikasi atau game..." onkeyup="filterApps()">
             </div>
         </div>
     </header>
 
     <div class="container">
-        <!-- KATEGORI GRID (Updated Style) -->
+        <!-- KATEGORI GRID -->
         <h3 class="section-title">Kategori</h3>
         
         <div class="cat-grid">
-            <!-- Item 1: Kesehatan -->
-            <div class="cat-item" onclick="filterCategory('kesehatan')">
-                <div class="cat-icon"><i class="fas fa-heartbeat"></i></div>
-                <div class="cat-text">
-                    <h4>Kesehatan</h4>
-                    <span>Sehat Alami</span>
-                </div>
+            <div class="cat-item" onclick="filterCategory('social')">
+                <div class="cat-icon"><i class="fas fa-users"></i></div>
+                <div class="cat-text"><h4>Social</h4><span>Chatting</span></div>
             </div>
-
-            <!-- Item 2: Islam -->
-            <div class="cat-item" onclick="filterCategory('islam')">
-                <div class="cat-icon"><i class="fas fa-mosque"></i></div>
-                <div class="cat-text">
-                    <h4>Islam</h4>
-                    <span>Ibadah</span>
-                </div>
-            </div>
-
-            <!-- Item 3: Tools -->
-            <div class="cat-item" onclick="filterCategory('tools')">
-                <div class="cat-icon"><i class="fas fa-tools"></i></div>
-                <div class="cat-text">
-                    <h4>Tools</h4>
-                    <span>Utilitas</span>
-                </div>
-            </div>
-
-            <!-- Item 4: Game -->
             <div class="cat-item" onclick="filterCategory('game')">
                 <div class="cat-icon"><i class="fas fa-gamepad"></i></div>
-                <div class="cat-text">
-                    <h4>Game</h4>
-                    <span>Hiburan</span>
-                </div>
+                <div class="cat-text"><h4>Game</h4><span>Seru</span></div>
+            </div>
+            <div class="cat-item" onclick="filterCategory('live')">
+                <div class="cat-icon"><i class="fas fa-video"></i></div>
+                <div class="cat-text"><h4>Live</h4><span>Streaming</span></div>
+            </div>
+            <div class="cat-item" onclick="filterCategory('tools')">
+                <div class="cat-icon"><i class="fas fa-tools"></i></div>
+                <div class="cat-text"><h4>Tools</h4><span>Utilitas</span></div>
             </div>
         </div>
 
-        <!-- APP GRID (Bawah) -->
+        <!-- APP GRID -->
         <div class="section-title">
-            <span id="gridTitle">Terbaru</span>
+            <span id="gridTitle">Disarankan untuk Anda</span>
             <span class="see-all" onclick="filterCategory('all')">Lihat Semua</span>
         </div>
 
         <div class="app-grid" id="appGrid">
-            <!-- Data Aplikasi dari Javascript akan muncul di sini -->
+            <!-- Data Aplikasi akan dirender di sini -->
         </div>
 
         <footer>
@@ -239,63 +280,61 @@
     <!-- SCRIPT -->
     <script>
         // === DATABASE APLIKASI ===
-        // Tambahkan data baru di urutan PALING BAWAH
         const appsData = [
             {
-                name: "Jadwal Sholat",
-                version: "v1.0",
-                size: "12 MB",
-                icon: "fa-mosque",
-                category: "islam",
-                pageUrl: "jadwal-sholat.html", // Nanti buat file ini
-                isNew: false
-            },
-            {
-                name: "Cleaner Pro",
-                version: "v2.2",
-                size: "8 MB",
-                icon: "fa-broom",
-                category: "tools",
-                pageUrl: "cleaner.html", // Nanti buat file ini
-                isNew: false
-            },
-            {
-                name: "SehatQ Tracker",
-                version: "v3.0",
-                size: "25 MB",
-                icon: "fa-heartbeat",
-                category: "kesehatan",
-                pageUrl: "sehatq.html", 
-                isNew: false
-            },
-             {
-                name: "Dompetku",
-                version: "v1.0",
-                size: "5 MB",
-                icon: "fa-thumbprint fa-light fa-address-card",
-                category: "kesehatan",
-                pageUrl: "sehatq.html", 
-                isNew: false
-            },
-            {
-                name: "Alarm",
-                version: "v1.0",
-                size: "5 MB",
-                icon: "fa-ravelry",
-                category: "Islam",
-                pageUrl: "sehatq.html", 
-                isNew: false
-            },
-            {
-                name: "Mobile Legends",
-                version: "v1.5.0",
-                size: "120 MB",
-                icon: "fa-gamepad",
+                name: "ZEPETO: Avatar, Siaran Langsung",
+                rating: "4,4",
+                size: "188 MB",
+                image: "https://play-lh.googleusercontent.com/sk_0699_pp_4p4qLfv2M9VwGj5wM8k4k5_T5Q7k5_T5Q7k5=w240-h480-rw",
                 category: "game",
-                pageUrl: "mobile-legends.html", // Nanti buat file ini
+                pageUrl: "#",
                 isNew: true
+            },
+            {
+                name: "Gemgala - Party & Chat & Games",
+                rating: "4,1",
+                size: "95 MB",
+                image: "https://play-lh.googleusercontent.com/yvC8vOcfDvygG2zJk5_T5Q7k5_T5Q7k5_T5Q7k5=w240-h480-rw",
+                category: "social",
+                pageUrl: "#",
+                isNew: false
+            },
+            {
+                name: "Bigo Live-Live Streaming",
+                rating: "4,4",
+                size: "82 MB",
+                image: "https://play-lh.googleusercontent.com/UbdxM-sXgN3sHqgCg6k5_T5Q7k5_T5Q7k5_T5Q7k5=w240-h480-rw",
+                category: "live",
+                pageUrl: "#",
+                isNew: false
+            },
+            {
+                name: "Instagram Lite",
+                rating: "4,2",
+                size: "2 MB",
+                image: "https://play-lh.googleusercontent.com/h9jWMwybkkgGj5wM8k4k5_T5Q7k5_T5Q7k5_T5Q7k5=w240-h480-rw",
+                category: "social",
+                pageUrl: "#",
+                isNew: false
+            },
+            {
+                name: "Mobile Legends: Bang Bang",
+                rating: "4,1",
+                size: "120 MB",
+                image: "https://play-lh.googleusercontent.com/2kH3s-pE1hC3L_kO0M-F6V4_g5k_T5Q7k5_T5Q7k5_T5Q7k5=w240-h480-rw",
+                category: "game",
+                pageUrl: "#",
+                isNew: true
+            },
+            {
+                name: "CapCut - Editor Video",
+                rating: "4,5",
+                size: "70 MB",
+                image: "https://play-lh.googleusercontent.com/McO0iS4qXh_c7k6_T5Q7k5_T5Q7k5_T5Q7k5_T5Q7k5=w240-h480-rw",
+                category: "tools",
+                pageUrl: "#",
+                isNew: false
             }
-            // <-- PASTE DATA BARU DISINI
         ];
 
         // --- LOGIC SYSTEM ---
@@ -304,21 +343,22 @@
             grid.innerHTML = "";
             
             if(data.length === 0) {
-                grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:30px; color:#888;">Tidak ada aplikasi di kategori ini.</div>`;
+                grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:30px; color:#888;">Tidak ada aplikasi ditemukan.</div>`;
                 return;
             }
 
             data.forEach(app => {
-                const badge = app.isNew ? '<div class="badge">NEW</div>' : '';
+                const badge = app.isNew ? '<div class="badge">Baru</div>' : '';
                 
                 const html = `
                     <a href="${app.pageUrl}" class="app-card">
                         ${badge}
-                        <div class="app-icon">
-                            <i class="fas ${app.icon}"></i>
-                        </div>
+                        <img src="${app.image}" alt="${app.name}" class="app-icon-img" loading="lazy">
                         <div class="app-title">${app.name}</div>
-                        <div class="app-ver">${app.version} • ${app.size}</div>
+                        <div class="app-ver">
+                            <span class="star-rating">${app.rating} ★</span> 
+                            ${app.size}
+                        </div>
                     </a>
                 `;
                 grid.innerHTML += html;
@@ -327,10 +367,10 @@
 
         function filterCategory(cat) {
             document.getElementById('searchInput').value = ''; 
-            const allApps = [...appsData].reverse();
+            const allApps = [...appsData];
             
             if(cat === 'all') {
-                document.getElementById('gridTitle').innerText = "Terbaru";
+                document.getElementById('gridTitle').innerText = "Semua Aplikasi";
                 renderGrid(allApps);
             } else {
                 document.getElementById('gridTitle').innerText = "Kategori: " + cat.charAt(0).toUpperCase() + cat.slice(1);
@@ -341,14 +381,14 @@
 
         function filterApps() {
             const input = document.getElementById('searchInput').value.toLowerCase();
-            const allApps = [...appsData].reverse();
+            const allApps = [...appsData];
             const filtered = allApps.filter(app => app.name.toLowerCase().includes(input));
             document.getElementById('gridTitle').innerText = "Hasil Pencarian";
             renderGrid(filtered);
         }
 
         window.onload = function() {
-            renderGrid([...appsData].reverse());
+            renderGrid(appsData);
         }
     </script>
 </body>
