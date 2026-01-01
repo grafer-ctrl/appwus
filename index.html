@@ -200,8 +200,8 @@
             height: 2.6em;
         }
         
+        /* Updated: Removed star styling requirement in HTML, kept here just in case */
         .app-ver { font-size: 0.75rem; color: var(--gray); display: flex; align-items: center; }
-        .star-rating { font-size: 0.7rem; margin-right: 5px; color: #5f6368; }
         
         .badge {
             position: absolute;
@@ -283,7 +283,6 @@
         const appsData = [
             {
                 name: "Pencatatan Keuangan Harian",
-               
                 size: "0,76 MB",
                 image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg9qjY8HYvj4DldgzadhkyTSjbgqjB-vgxL35Gyv0V1I1CM6m64MlwoTkLo7jBw5Ffzb8cBVUjeSxsR_cvzg2KBgDxSYttUV5ncttlcDT9CrtxxQNv02ZtD_I_-YDztaExWk00YQADgN7GgVWLe9uYgg6pyKTUlXdUW72WOJFeeinr2mp7wdaB07ManYe3x/s320/Copilot_20260101_170054.png",
                 category: "game",
@@ -350,13 +349,13 @@
             data.forEach(app => {
                 const badge = app.isNew ? '<div class="badge">Baru</div>' : '';
                 
+                // RATING DIHAPUS DARI SINI
                 const html = `
                     <a href="${app.pageUrl}" class="app-card">
                         ${badge}
                         <img src="${app.image}" alt="${app.name}" class="app-icon-img" loading="lazy">
                         <div class="app-title">${app.name}</div>
                         <div class="app-ver">
-                            <span class="star-rating">${app.rating} ★</span> 
                             ${app.size}
                         </div>
                     </a>
