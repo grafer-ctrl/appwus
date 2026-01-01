@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Catatan Keuangan - APPWUS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- COPY VARIABLES DARI INDEX --- */
+        :root {
+            --primary: #2563EB;      
+            --secondary: #1D4ED8;    
+            --bg: #F3F4F6;           
+            --white: #FFFFFF;        
+            --text: #1F2937;         
+            --gray: #6B7280;         
+            --max-width: 800px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--white); color: var(--text); padding-bottom: 80px; }
+        a { text-decoration: none; color: inherit; }
+
+        /* --- NAVBAR --- */
+        .navbar {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            background: var(--white);
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .back-btn { font-size: 1.2rem; color: var(--text); margin-right: 20px; cursor: pointer; }
+        .nav-title { font-weight: 600; font-size: 1.1rem; }
+        .nav-actions { margin-left: auto; color: var(--text); }
+
+        /* --- CONTAINER --- */
+        .container { max-width: var(--max-width); margin: 0 auto; padding: 20px; }
+
+        /* --- HERO SECTION --- */
+        .app-header { display: flex; gap: 20px; margin-bottom: 25px; }
+
+        .detail-icon {
+            width: 90px; height: 90px;
+            border-radius: 22%; object-fit: cover;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .app-info { display: flex; flex-direction: column; justify-content: center; }
+        .app-name { font-size: 1.3rem; font-weight: 700; line-height: 1.2; margin-bottom: 5px; }
+        .dev-name { color: var(--primary); font-size: 0.9rem; font-weight: 500; }
+        .app-tags { font-size: 0.75rem; color: var(--gray); margin-top: 5px; }
+
+        /* --- STATS BAR --- */
+        .stats-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid #eee;
+        }
+        .stat-item { text-align: center; flex: 1; border-right: 1px solid #eee; }
+        .stat-item:last-child { border-right: none; }
+        .stat-val { font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 4px; }
+        .stat-label { font-size: 0.75rem; color: var(--gray); margin-top: 2px; }
+
+        /* --- BUTTON (Diubah jadi tag <a> agar bisa diisi link) --- */
+        .install-btn {
+            background: var(--primary); color: var(--white);
+            width: 100%; padding: 14px;
+            border-radius: 50px; text-align: center;
+            display: block; font-weight: 600; font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+            transition: transform 0.2s; margin-bottom: 30px;
+        }
+        .install-btn:active { transform: scale(0.98); }
+
+        /* --- SCREENSHOTS --- */
+        .section-header { font-weight: 600; font-size: 1.1rem; margin-bottom: 15px; }
+        .screenshot-scroll {
+            display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px;
+            scrollbar-width: none; 
+        }
+        .screenshot-scroll::-webkit-scrollbar { display: none; }
+        .ss-img {
+            width: 150px; height: 280px; object-fit: cover;
+            border-radius: 12px; border: 1px solid #eee; flex-shrink: 0;
+        }
+
+        /* --- FOOTER INFO --- */
+        .info-grid {
+            margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+        }
+        .info-item h5 { font-size: 0.85rem; color: var(--text); }
+        .info-item p { font-size: 0.8rem; color: var(--gray); }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+        <div class="nav-title">Detail Aplikasi</div>
+        <div class="nav-actions"><i class="fas fa-share-alt"></i></div>
+    </div>
+
+    <div class="container">
+        
+        <!-- HEADER APLIKASI -->
+        <div class="app-header">
+            
+            <!-- 1. PASANG ICON HEADER DI SINI (Ganti Link dalam src="") -->
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh-VCdAlHctxMyjIdAGh6Afjt6oUqOSHRD9W7d3IoeJMs2Baxid6ClfziAzaAaDDCNQIywUlX6Lzx6kYY2OvCojvnVbfMXgCJuy908H3X6-RntrUgcRtlhGavonT2sx-c6FDtAvsTfJC0JuM81-66UNowPHRkG6gy-Pv5YwgLS9MSHzW2L4Pp5osdkSVRUg/s320/Copilot_20260101_172300.png" 
+                 alt="Icon Aplikasi" 
+                 class="detail-icon"> 
+            
+            <div class="app-info">
+                <div class="app-name">Catatan Keuangan & Pengeluaran</div>
+                <div class="dev-name">Finansial Studio</div>
+                <div class="app-tags">Keuangan • Produktivitas</div>
+            </div>
+        </div>
+
+        <!-- STATISTIK -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-val">4.8 <i class="fas fa-star" style="font-size: 10px;"></i></div>
+                <div class="stat-label">12K Ulasan</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-val">8 MB</div>
+                <div class="stat-label">Ukuran</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-val">1Jt+</div>
+                <div class="stat-label">Download</div>
+            </div>
+        </div>
+
+        <!-- 2. PASANG URL UNTUK LINK INSTAL DI SINI (Ganti tanda pagar # dengan link download Anda) -->
+        <a href="https://release-assets.githubusercontent.com/github-production-release-asset/1126064385/2bb96be9-625a-4623-81be-8dcca691b423?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-01-01T10%3A46%3A23Z&rscd=attachment%3B+filename%3Dapp-release.apk&rsct=application%2Fvnd.android.package-archive&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-01-01T09%3A45%3A57Z&ske=2026-01-01T10%3A46%3A23Z&sks=b&skv=2018-11-09&sig=BTJv1ypBizpe%2Bsh6kGOBbRSvjwPdcIsT%2BkkUcAxtMq8%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2NzI2MjU4NSwibmJmIjoxNzY3MjYyMjg1LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.En29swUiDcqQmDledjLvUuNdNqDcjaTb5TS9uFmOKBk&response-content-disposition=attachment%3B%20filename%3Dapp-release.apk&response-content-type=application%2Fvnd.android.package-archive#" class="install-btn">Install</a>
+
+        <!-- SCREENSHOTS -->
+        <div class="screenshots">
+            <div class="section-header">Pratinjau</div>
+            <div class="screenshot-scroll">
+                
+                <!-- 3. PASANG URL SCREEN DI SINI (Ganti link dalam src="") -->
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgTBRF6iI-1Ip04fyyazabN5mTLuUXssKXL6aAZ6SZd8N3VFeU5WTVc7WEN2XNzVu_3_d90kJbbqdFwc68vkOnIulFFZDXi5OVmNFYcE96qXNVppLCU5wcoFonUfV9IM2GhBzxnJXjmS5R_WgRwHxmg0srLlrmk3ms2fH5whcvng_MhD9Lvs55dnO22AksF/s1600/1000197182.jpg" class="ss-img">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi6ZX3ZkC9mj8Of7dKsyDh_bpd3D1lXwrX6cQqLu_LyqH8WLyPxZ7YET6NUmcvnrxTUzkJNk9ZZFC16mLbdi_0S6Mh6d-CACTgOcMVWzPAEHuwej5HJPfmX_p_UTuWSCwrEvlckGffC82PzmDsq8OC35gRePuwNBm3h5L3aIcqSokL2I4t4puGUvHmPdffM/s1600/1000197180.jpg" class="ss-img">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgOtgSitaShDOZ6TebKswsERCLrr8Da4ypgdC0M4Hu6-gpCH4MeugNV2ka32x5FWwaUSNSZYo25tgS3x3EqMv2wr6oCUeWTvT1nklGL86kktbScoisu7be9A7WlLTBJ-QLWzMqSG80j5krDv4LevOCMljZx0V71lN9DbPROB3ePH4kxtth13dUjy3cgF553/s1600/1000197179.jpg" class="ss-img">
+				<img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiCQksbm4fPJ0f2f8yEE8-FFwDv2UhTRka9cKmDBzCmge3hT5ar36y7JOYN_7jo0yC0QUC26Uo8pHUNDaCf5giabRLmEr-QtHxXtQ3EKzTQP7HtyiUZQs2Pn5BBENRf4U4V_uVFcXdJRfSXX9pV9828CjrWuMPod9N2-v5obtniZv9XfRYbrb8y4mobxlOG/s1600/1000197181.jpg" class="ss-img">
+				<img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgGn58ptlu0KFwMfVSr8bbf_-34OB3TOaJlbkjujO8VWawHK5xY6mCpF_ieiaspNzGX6gdFFUmCwe3WrGwHVk5JMvJMv4itbWpx_prI482cvaD4Edt76Mu6WxfZdZnhnWGOIcOYxUmIUOFL-DXAc4VGA90yJZ0ry-0dy21ArG20rkhFHl6085ByQlsmThbl/s1600/1000197177.jpg" class="ss-img">
+                
+            </div>
+        </div>
+
+        <!-- DESKRIPSI -->
+        <div class="desc-box">
+            <div class="section-header">Tentang aplikasi ini</div>
+            <div class="desc-text">
+                Catat pemasukan dan pengeluaran harian Anda dengan mudah. Aplikasi ini membantu Anda mengelola keuangan pribadi agar lebih teratur.
+                <br><br>
+                <b>Fitur Utama:</b><br>
+                ✅ Laporan Harian & Bulanan<br>
+                ✅ Grafik Keuangan Interaktif<br>
+                ✅ Export ke Excel/PDF
+            </div>
+        </div>
+
+        <!-- INFORMASI TAMBAHAN -->
+        <div class="info-grid">
+            <div class="info-item">
+                <h5>Versi</h5>
+                <!-- 4. PASANG VERSI DI SINI -->
+                <p>v1.0</p>
+            </div>
+            <div class="info-item">
+                <h5>Diupdate pada</h5>
+                <!-- 4. PASANG TANGGAL UPDATE DI SINI -->
+                <p>1 Januari 2026</p>
+            </div>
+            <div class="info-item">
+                <h5>Android Wajib</h5>
+                <!-- 4. PASANG OS WAJIB DI SINI -->
+                <p>ANDROID 8.0+</p>
+            </div>
+            <div class="info-item">
+                <h5>Ditawarkan Oleh</h5>
+                <!-- 4. PASANG NAMA PENGEMBANG (DITAWARKAN OLEH) DI SINI -->
+                <p>APPWUS Team</p>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
