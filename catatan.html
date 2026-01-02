@@ -93,9 +93,64 @@
             -webkit-overflow-scrolling: touch; 
         }
         .screenshot-scroll::-webkit-scrollbar { display: none; }
+        
         .ss-img {
             width: 150px; height: 280px; object-fit: cover;
             border-radius: 12px; border: 1px solid #eee; flex-shrink: 0;
+            cursor: pointer; /* Menandakan bisa diklik */
+            transition: transform 0.2s;
+        }
+        .ss-img:active { transform: scale(0.95); }
+
+        /* --- POPUP IMAGE VIEWER (BARU) --- */
+        .image-viewer {
+            display: none; /* Tersembunyi default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: rgba(0, 0, 0, 0.9); /* Latar belakang hitam transparan */
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s;
+        }
+
+        .viewer-content {
+            max-width: 90%;
+            max-height: 90vh;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            animation: zoomIn 0.3s;
+        }
+
+        .close-viewer {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: #f1f1f1;
+            font-size: 35px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+            z-index: 1001;
+            background: rgba(0,0,0,0.5);
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .close-viewer:hover { color: #bbb; }
+
+        @keyframes zoomIn {
+            from {transform:scale(0.8); opacity: 0;}
+            to {transform:scale(1); opacity: 1;}
+        }
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
         }
 
         /* --- FOOTER INFO --- */
@@ -131,8 +186,6 @@
                 <div class="app-tags">Keuangan • Produktivitas</div>
             </div>
         </div>
-
-        <!-- KOLOM STATISTIK (ULASAN, DOWNLOAD) TELAH DIHAPUS -->
 
         <!-- LINK INSTALL -->
         <a href="https://release-assets.githubusercontent.com/github-production-release-asset/1126064385/2bb96be9-625a-4623-81be-8dcca691b423?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-01-01T10%3A46%3A23Z&rscd=attachment%3B+filename%3Dapp-release.apk&rsct=application%2Fvnd.android.package-archive&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-01-01T09%3A45%3A57Z&ske=2026-01-01T10%3A46%3A23Z&sks=b&skv=2018-11-09&sig=BTJv1ypBizpe%2Bsh6kGOBbRSvjwPdcIsT%2BkkUcAxtMq8%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2NzI2MjU4NSwibmJmIjoxNzY3MjYyMjg1LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.En29swUiDcqQmDledjLvUuNdNqDcjaTb5TS9uFmOKBk&response-content-disposition=attachment%3B%20filename%3Dapp-release.apk&response-content-type=application%2Fvnd.android.package-archive#" class="install-btn">Install</a>
@@ -186,9 +239,42 @@
                 <p>APPWUS Team</p>
             </div>
         </div>
-
     </div>
+
+    <!-- ELEMEN POPUP VIEWER (BARU) -->
+    <div id="imageViewer" class="image-viewer">
+        <span class="close-viewer">&times;</span>
+        <img class="viewer-content" id="fullImage">
+    </div>
+
+    <!-- SCRIPT (BARU) -->
+    <script>
+        // Mendapatkan elemen modal
+        const modal = document.getElementById("imageViewer");
+        const modalImg = document.getElementById("fullImage");
+        const images = document.querySelectorAll(".ss-img");
+        const closeBtn = document.querySelector(".close-viewer");
+
+        // Loop setiap gambar screenshot
+        images.forEach(img => {
+            img.addEventListener("click", function() {
+                modal.style.display = "flex"; // Menampilkan modal
+                modalImg.src = this.src; // Mengganti sumber gambar modal sesuai yg diklik
+            });
+        });
+
+        // Fungsi tombol tutup
+        closeBtn.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // Fungsi tutup jika klik di area hitam (bukan gambarnya)
+        modal.onclick = function(e) {
+            if (e.target !== modalImg) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
 
 </body>
 </html>
-
