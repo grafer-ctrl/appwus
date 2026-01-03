@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Digi Qur'an Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- CSS VARIABLES --- */
+        :root {
+            --primary: #2563EB;      
+            --secondary: #1D4ED8;    
+            --bg: #F3F4F6;           
+            --white: #FFFFFF;        
+            --text: #1F2937;         
+            --gray: #6B7280;         
+            --max-width: 800px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--white); color: var(--text); padding-bottom: 80px; }
+        a { text-decoration: none; color: inherit; }
+
+        /* --- NAVBAR --- */
+        .navbar {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            background: var(--white);
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .back-btn { font-size: 1.2rem; color: var(--text); margin-right: 20px; cursor: pointer; }
+        .nav-title { font-weight: 600; font-size: 1.1rem; }
+        .nav-actions { margin-left: auto; color: var(--text); }
+
+        /* --- CONTAINER --- */
+        .container { max-width: var(--max-width); margin: 0 auto; padding: 20px; }
+
+        /* --- HERO SECTION --- */
+        .app-header { display: flex; gap: 20px; margin-bottom: 25px; align-items: center; }
+
+        .detail-icon {
+            width: 90px; height: 90px;
+            border-radius: 22%; object-fit: cover;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .app-info { display: flex; flex-direction: column; justify-content: center; }
+        .app-name { font-size: 1.3rem; font-weight: 700; line-height: 1.2; margin-bottom: 5px; }
+        .dev-name { color: var(--primary); font-size: 0.9rem; font-weight: 600; }
+        
+        /* Style untuk Ukuran di bawah Developer */
+        .app-size { font-size: 0.85rem; color: var(--text); font-weight: 500; margin-top: 2px; }
+        
+        .app-tags { font-size: 0.75rem; color: var(--gray); margin-top: 4px; }
+
+        /* --- BUTTON --- */
+        .install-btn {
+            background: var(--primary); color: var(--white);
+            width: 100%; padding: 14px;
+            border-radius: 50px; text-align: center;
+            display: block; font-weight: 600; font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+            transition: transform 0.2s; margin-bottom: 15px; 
+        }
+        .install-btn:active { transform: scale(0.98); }
+
+        /* --- WARNING BOX --- */
+        .warning-box {
+            background-color: #FEF2F2;
+            border: 1px dashed #DC2626;
+            color: #DC2626;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            text-align: center;
+            margin-bottom: 30px;
+            line-height: 1.4;
+            font-weight: 500;
+        }
+
+        /* --- SCREENSHOTS --- */
+        .section-header { font-weight: 600; font-size: 1.1rem; margin-bottom: 15px; }
+        .screenshot-scroll {
+            display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px;
+            scrollbar-width: none; 
+            -webkit-overflow-scrolling: touch; 
+        }
+        .screenshot-scroll::-webkit-scrollbar { display: none; }
+        
+        .ss-img {
+            width: 150px; height: 280px; object-fit: cover;
+            border-radius: 12px; border: 1px solid #eee; flex-shrink: 0;
+            cursor: pointer; /* Menandakan bisa diklik */
+            transition: transform 0.2s;
+        }
+        .ss-img:active { transform: scale(0.95); }
+
+        /* --- POPUP IMAGE VIEWER (BARU) --- */
+        .image-viewer {
+            display: none; /* Tersembunyi default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: rgba(0, 0, 0, 0.9); /* Latar belakang hitam transparan */
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s;
+        }
+
+        .viewer-content {
+            max-width: 90%;
+            max-height: 90vh;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            animation: zoomIn 0.3s;
+        }
+
+        .close-viewer {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: #f1f1f1;
+            font-size: 35px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+            z-index: 1001;
+            background: rgba(0,0,0,0.5);
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .close-viewer:hover { color: #bbb; }
+
+        @keyframes zoomIn {
+            from {transform:scale(0.8); opacity: 0;}
+            to {transform:scale(1); opacity: 1;}
+        }
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+
+        /* --- FOOTER INFO --- */
+        .info-grid {
+            margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+        }
+        .info-item h5 { font-size: 0.85rem; color: var(--text); }
+        .info-item p { font-size: 0.8rem; color: var(--gray); }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+        <div class="nav-title">Detail Aplikasi</div>
+        <div class="nav-actions"><i class="fas fa-share-alt"></i></div>
+    </div>
+
+    <div class="container">
+        
+        <!-- HEADER APLIKASI -->
+        <div class="app-header">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjRscLCwXW5hxAX-sNVzqSmujvUl31esrJDt0wwj5VgjRcSelE4WBVQX8EdKpHlL_UTE3JCfGwTGQI7lpz6we4cyS6MX3fCAViSHgBnBVTLI6nA246WWkE7dhzlHKsv6YYnJL0kBP9o4DYToAjceRsmsiBKJWItIsBDxW8qFL2-DqSB0YZ6hv5hTvex7ILa/s250/250.jpeg" 
+                 alt="Icon Aplikasi" 
+                 class="detail-icon"> 
+            
+            <div class="app-info">
+                <div class="app-name">Digi Qur'an Pro</div>
+                <div class="dev-name">Umar Studio</div>
+                <!-- UKURAN DISATUKAN DI SINI -->
+                <div class="app-size">0.76 mb</div>
+                <div class="app-tags">Islam</div>
+            </div>
+        </div>
+
+        <!-- LINK INSTALL -->
+        <a href="https://release-assets.githubusercontent.com/github-production-release-asset/1126064385/07b285e4-7acd-4eef-aac8-bf2dc9936b30?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-01-03T10%3A32%3A32Z&rscd=attachment%3B+filename%3Dapp-release.apk&rsct=application%2Fvnd.android.package-archive&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-01-03T09%3A31%3A37Z&ske=2026-01-03T10%3A32%3A32Z&sks=b&skv=2018-11-09&sig=%2FSypiPV6CV2QF4ZioFtxYXyQdPJm%2BIiBJgFg1irXaIo%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2NzQzMjk5NywibmJmIjoxNzY3NDMyNjk3LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.ft0qSSKkjVYag1nhO8PqLSJaVSqzNx2dVbMx-Pkn3vQ&response-content-disposition=attachment%3B%20filename%3Dapp-release.apk&response-content-type=application%2Fvnd.android.package-archive#" class="install-btn">Install</a>
+
+        <!-- PERINGATAN (WARNING) -->
+        <div class="warning-box">
+            Hargai Karya Orang Lain ! Dilarang unduh untuk digunakan upload ulang di platform manapun, kami akan melaporkan ke platform bersangkutan !
+        </div>
+
+        <!-- SCREENSHOTS (Bisa Digeser) -->
+        <div class="screenshots">
+            <div class="section-header">Pratinjau</div>
+            <div class="screenshot-scroll">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhouhuQTZPOamggpj_IE_E7zuwQE4j8fXabo0EPypexZ67aHIle9I8okLgOWgIcnX_JEHHiqlElSpxSfIHlS45ks_ynCOyW3Q6_eQVOp-J9HO2hxwsuXs85MbJVjdCT6EQMccW2iQ8U18VrSdjCuSiJdM71S1GZQh26_-nDGkgW_fCs74S1L4-3hz051qv_/s1600/Screenshot_20260103-151734.jpg" class="ss-img">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjJjSxb4d0ten-Yv8-wlM_OxEjDrM5QBnjguT0oFmDPRta1yVPYKUFHheCAxQBV03Uj83q9WTbaxWd8fMTLrcPWsZve57WFMg-DjTqzuvDgT1oMyGEATthNjCJkxkxIbgSYuiBVi6PbDK2imkj6pbY5EeU_fRKCbOoF6mLQygjy7XUcj27yK6PsORvP416g/s1600/Screenshot_20260103-151714.jpg" class="ss-img">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjz9ERTn4bTnEIQiPkyuHbRe_8IoIBIcF7DQidSUmKPNTz3DQdTVfaDW6FuEag76IaV_wJt5J6Fx9Ebu3sFUCOe8cDNp7F4w6SF2PqZEsntsHbCH3CsmSB-3AmENa1eJQdUwXPhiy2BPhP4BPnDfItTdMuI6xkXV4r5GxXsoBC07InA3_BrsQJC3nEkQQzF/s1600/Screenshot_20260103-151650.jpg" class="ss-img">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh1srZ93CHSpsaj_Ey00IvnCxmIMPYd3jxuW2u1s5KY9ooQaMi9sZg62uVdaJOb4Aco8UJQoyc3K8PrSmjjS_dpVkK0YTyRy1gmU84lrvMooaE0gI4z8sWmnXax5cRccJqPG4x0de9jp3FQvWP_ZEiFc_X58klTab5n_5Pv3BdwISYMTmYcTB_TrGd8kE8F/s1600/Screenshot_20260103-151639.jpg" class="ss-img">
+				<img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjsFLseDmp9Zo13rcGQFXSu2SbxtmhZDwBujyV8cJjTdDH-8GGp5wThMHCydtTTxZ9aHIewToLh5Umd0tpz0fqbfFkUpOKPrRbCQzfx27TovEuIf_itb5Yv8eFDb8zqpiDkZVzAQgudCIfaddSxKPdFfvVRUAlaiIMoNFBxFkR7Rw2aksn9Qlxznv6-zGzy/s1600/Screenshot_20260103-155337.jpg" class="ss-img">
+                </div>
+        </div>
+
+        <!-- DESKRIPSI -->
+        <div class="desc-box">
+            <div class="section-header">Tentang aplikasi ini</div>
+            <div class="desc-text">
+                "Baca, Tandai, Visual target bacaan, dan Lanjutkan. Fokus Ibadah Tanpa Batas!"
+Jangan biarkan kesibukan memutus tilawahmu. 
+Dengan fitur Smart Resume dan Visual Progress Tracker, 
+DIGI QUR'AN PRO membantu 
+Anda memantau target 
+khatam dengan lebih mudah dan menyenangkan.
+                <br><br>
+                <b>Fitur Utama:</b><br>
+                ✅ Bisa tandai di manapun anda membaca dan berhenti<br>
+                ✅ Grafik bacaan anda sejauh mana<br>
+                ✅ Bisa tekan faforit surah otomatis akan paling depan screenshot<br>
+				✅ Bisa seting ukuran font, menampilkan latin, audio, dan terjemahan<br>
+				✅ Visual modern menjadikan anda tidak bosan<br>
+            </div>
+        </div>
+
+        <!-- INFORMASI TAMBAHAN -->
+        <div class="info-grid">
+            <div class="info-item">
+                <h5>Versi</h5>
+                <p>v1.0</p>
+            </div>
+            <div class="info-item">
+                <h5>Diupdate pada</h5>
+                <p>1 Januari 2026</p>
+            </div>
+            <div class="info-item">
+                <h5>Android Wajib</h5>
+                <p>ANDROID 8.0+</p>
+            </div>
+            <div class="info-item">
+                <h5>Ditawarkan Oleh</h5>
+                <p>APPWUS Team</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ELEMEN POPUP VIEWER (BARU) -->
+    <div id="imageViewer" class="image-viewer">
+        <span class="close-viewer">&times;</span>
+        <img class="viewer-content" id="fullImage">
+    </div>
+
+    <!-- SCRIPT (BARU) -->
+    <script>
+        // Mendapatkan elemen modal
+        const modal = document.getElementById("imageViewer");
+        const modalImg = document.getElementById("fullImage");
+        const images = document.querySelectorAll(".ss-img");
+        const closeBtn = document.querySelector(".close-viewer");
+
+        // Loop setiap gambar screenshot
+        images.forEach(img => {
+            img.addEventListener("click", function() {
+                modal.style.display = "flex"; // Menampilkan modal
+                modalImg.src = this.src; // Mengganti sumber gambar modal sesuai yg diklik
+            });
+        });
+
+        // Fungsi tombol tutup
+        closeBtn.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // Fungsi tutup jika klik di area hitam (bukan gambarnya)
+        modal.onclick = function(e) {
+            if (e.target !== modalImg) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+
+</body>
+</html>
+
+
+
