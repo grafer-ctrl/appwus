@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Catatan Keuangan - APPWUS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- CSS VARIABLES --- */
+        :root {
+            --primary: #2563EB;      
+            --secondary: #1D4ED8;    
+            --bg: #F3F4F6;           
+            --white: #FFFFFF;        
+            --text: #1F2937;         
+            --gray: #6B7280;         
+            --max-width: 800px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--white); color: var(--text); padding-bottom: 80px; }
+        a { text-decoration: none; color: inherit; }
+
+        /* --- NAVBAR --- */
+        .navbar {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            background: var(--white);
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .back-btn { font-size: 1.2rem; color: var(--text); margin-right: 20px; cursor: pointer; }
+        .nav-title { font-weight: 600; font-size: 1.1rem; }
+        .nav-actions { margin-left: auto; color: var(--text); }
+
+        /* --- CONTAINER --- */
+        .container { max-width: var(--max-width); margin: 0 auto; padding: 20px; }
+
+        /* --- HERO SECTION --- */
+        .app-header { display: flex; gap: 20px; margin-bottom: 25px; align-items: center; }
+
+        .detail-icon {
+            width: 90px; height: 90px;
+            border-radius: 22%; object-fit: cover;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .app-info { display: flex; flex-direction: column; justify-content: center; }
+        .app-name { font-size: 1.3rem; font-weight: 700; line-height: 1.2; margin-bottom: 5px; }
+        .dev-name { color: var(--primary); font-size: 0.9rem; font-weight: 600; }
+        
+        /* Style untuk Ukuran di bawah Developer */
+        .app-size { font-size: 0.85rem; color: var(--text); font-weight: 500; margin-top: 2px; }
+        
+        .app-tags { font-size: 0.75rem; color: var(--gray); margin-top: 4px; }
+
+        /* --- BUTTON --- */
+        .install-btn {
+            background: var(--primary); color: var(--white);
+            width: 100%; padding: 14px;
+            border-radius: 50px; text-align: center;
+            display: block; font-weight: 600; font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+            transition: transform 0.2s; margin-bottom: 15px; 
+        }
+        .install-btn:active { transform: scale(0.98); }
+
+        /* --- WARNING BOX --- */
+        .warning-box {
+            background-color: #FEF2F2;
+            border: 1px dashed #DC2626;
+            color: #DC2626;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            text-align: center;
+            margin-bottom: 30px;
+            line-height: 1.4;
+            font-weight: 500;
+        }
+
+        /* --- SCREENSHOTS --- */
+        .section-header { font-weight: 600; font-size: 1.1rem; margin-bottom: 15px; }
+        .screenshot-scroll {
+            display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px;
+            scrollbar-width: none; 
+            -webkit-overflow-scrolling: touch; 
+        }
+        .screenshot-scroll::-webkit-scrollbar { display: none; }
+        
+        .ss-img {
+            width: 150px; height: 280px; object-fit: cover;
+            border-radius: 12px; border: 1px solid #eee; flex-shrink: 0;
+            cursor: pointer; /* Menandakan bisa diklik */
+            transition: transform 0.2s;
+        }
+        .ss-img:active { transform: scale(0.95); }
+
+        /* --- POPUP IMAGE VIEWER (BARU) --- */
+        .image-viewer {
+            display: none; /* Tersembunyi default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: rgba(0, 0, 0, 0.9); /* Latar belakang hitam transparan */
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s;
+        }
+
+        .viewer-content {
+            max-width: 90%;
+            max-height: 90vh;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            animation: zoomIn 0.3s;
+        }
+
+        .close-viewer {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: #f1f1f1;
+            font-size: 35px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+            z-index: 1001;
+            background: rgba(0,0,0,0.5);
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .close-viewer:hover { color: #bbb; }
+
+        @keyframes zoomIn {
+            from {transform:scale(0.8); opacity: 0;}
+            to {transform:scale(1); opacity: 1;}
+        }
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+
+        /* --- FOOTER INFO --- */
+        .info-grid {
+            margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+        }
+        .info-item h5 { font-size: 0.85rem; color: var(--text); }
+        .info-item p { font-size: 0.8rem; color: var(--gray); }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+        <div class="nav-title">Detail Aplikasi</div>
+        <div class="nav-actions"><i class="fas fa-share-alt"></i></div>
+    </div>
+
+    <div class="container">
+        
+        <!-- HEADER APLIKASI -->
+        <div class="app-header">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhMYiNQwvixdT5RhGy8o7VsdMaRQxq6v-wawajNJOVK_mpf8WbryswoZ76RPWNmYj-YCgUPFutWWveBeoYimkVn2ypI8NEtusbpJ6ts9ZPINRod1a-HFkKrGHPvyXCtgl1PYXdlYU4gw0tr4H2_ilyL-mdI4oMDyl9NKH9ZaOhFndWr1_x9jgYDBa6pBicb/s320/a-modern-mobile-app-icon-design-featurin_C2OjManBRCujlDBLXfk-Gw_vUF9-S6HS3Ou1tY-JzWPhA.jpeg" 
+                 alt="Icon Aplikasi" 
+                 class="detail-icon"> 
+            
+            <div class="app-info">
+                <div class="app-name">Catatan Keuangan & Pengeluaran</div>
+                <div class="dev-name">Finansial Studio</div>
+                <!-- UKURAN DISATUKAN DI SINI -->
+                <div class="app-size">0.76 mb</div>
+                <div class="app-tags">Keuangan • Produktivitas</div>
+            </div>
+        </div>
+
+        <!-- LINK INSTALL -->
+        <a href="https://github.com/grafer-ctrl/appwus/releases/download/AlMulk/AlMulkPro.apk#" class="install-btn">Install</a>
+
+        <!-- PERINGATAN (WARNING) -->
+        <div class="warning-box">
+            Hargai Karya Orang Lain ! Dilarang unduh untuk digunakan upload ulang di platform manapun, kami akan melaporkan ke platform bersangkutan !
+        </div>
+
+        <!-- SCREENSHOTS (Bisa Digeser) -->
+        <div class="screenshots">
+            <div class="section-header">Pratinjau</div>
+            <div class="screenshot-scroll">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhsiZgnwUhjInNK5BUUSdlQaPd5h6u1lKNc09yFU9RcviE8Lme1xXz4khyrPLZqvhyfpxUpwH8p2x_TW_msCjuURxWe6wo-zT_PfZgvCQ5UiVxLq-ZWJ8Pzs2rJQMQ3ICJH7DpnPBE97IGyE0f0B48unlfwV7qMX30or9hkJKaGsC4cBZyBgrD7XXFkj9QR/s320/1000201878.jpg" class="ss-img">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh1iWj_XSNjblJLw8koqZkxCkoETuOjXT-KnR2E0tuJ1eHfO3s6hvdS7-L_QdmlXQ3KX9G4VJI10A0ZNrIc8RfSv-xTUUQ3mFN6w11LL-L0GzBPwpqdqXSH76VwwF5tL0CDXVC-MPrc8pmFUds6oGt0uatZrIB6khtC4Y_qdG3g6V-A7DDyiadhO731aXT0/s320/1000201879.jpg" class="ss-img">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEipNsM6r0B8sRZu0YG4SwP7E7VsrP1P0Ss7eZFTfHHlJuBc8j4KepTsM-ur4GeeZfKM44aBDj7bjpSQDC3pDHae_71WhP94e3Bxumq_JVVGEpSYvroU0fSzvsM6APidDfIjsW56WIGzEhOI2QnToEo64jojqf4TDZgUsKGaKdKhI1rngNNV4tjMNaAW4KvT/s320/1000201880.jpg" class="ss-img">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgwPmb-16aXKR6OMJYdEzfJ8zNCOOT0OUhqAthSmZb9Fm2orb8_hiVe9288fJku-TWfr8zyu7pbB30Mfy5qhIPdYv7gszMMjdiySc-0bgf4BHk_C7kKZsTUPJfXDpcDMbIg6M9oVmjPI4Tnx78NiMiTfuMA8kdzBnOS7U1n-CYizv0q-VekspMI3ZBWJCS_/s320/1000201882.jpg" class="ss-img">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgnX-kYKcx1U4_GBvSZNhzPQ8asf-o1pAknkwHrFQMqaRPNlGEvhbdByq9fmdzW4ZFE_rA9zGLEXFm_HuGMci5n68MgcY9Zk7gz_FxVsSl3tO8UT6CPzhw2bOdXj5fzSb5CDsMLddYfPj9RqHEPlGrsR5GxO34MQ7iOyYqMt99OmuWlQJchVgSgAiGbsUfi/s320/1000201885.jpg" class="ss-img">
+                </div>
+        </div>
+
+        <!-- DESKRIPSI -->
+        <div class="desc-box">
+            <div class="section-header">Tentang aplikasi ini</div>
+            <div class="desc-text">
+                Catat pemasukan dan pengeluaran harian Anda dengan mudah. Aplikasi ini membantu Anda mengelola keuangan pribadi agar lebih teratur.
+                <br><br>
+                <b>Fitur Utama:</b><br>
+                ✅ Laporan Harian & Bulanan<br>
+                ✅ Grafik Keuangan Interaktif<br>
+                ✅ Export ke Excel/PDF
+            </div>
+        </div>
+
+        <!-- INFORMASI TAMBAHAN -->
+        <div class="info-grid">
+            <div class="info-item">
+                <h5>Versi</h5>
+                <p>v1.0</p>
+            </div>
+            <div class="info-item">
+                <h5>Diupdate pada</h5>
+                <p>1 Januari 2026</p>
+            </div>
+            <div class="info-item">
+                <h5>Android Wajib</h5>
+                <p>ANDROID 8.0+</p>
+            </div>
+            <div class="info-item">
+                <h5>Ditawarkan Oleh</h5>
+                <p>APPWUS Team</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ELEMEN POPUP VIEWER (BARU) -->
+    <div id="imageViewer" class="image-viewer">
+        <span class="close-viewer">&times;</span>
+        <img class="viewer-content" id="fullImage">
+    </div>
+
+    <!-- SCRIPT (BARU) -->
+    <script>
+        // Mendapatkan elemen modal
+        const modal = document.getElementById("imageViewer");
+        const modalImg = document.getElementById("fullImage");
+        const images = document.querySelectorAll(".ss-img");
+        const closeBtn = document.querySelector(".close-viewer");
+
+        // Loop setiap gambar screenshot
+        images.forEach(img => {
+            img.addEventListener("click", function() {
+                modal.style.display = "flex"; // Menampilkan modal
+                modalImg.src = this.src; // Mengganti sumber gambar modal sesuai yg diklik
+            });
+        });
+
+        // Fungsi tombol tutup
+        closeBtn.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // Fungsi tutup jika klik di area hitam (bukan gambarnya)
+        modal.onclick = function(e) {
+            if (e.target !== modalImg) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+
+</body>
+</html>
+
+
+
+
+
