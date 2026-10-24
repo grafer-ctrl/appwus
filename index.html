@@ -2,41 +2,99 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Redirecting...</title>
-<script>
-// ambil slug setelah / 
-const slug = window.location.pathname.replace(/^\/+|\/+$/g, '').split('/')[0];
-
-async function redirect() {
-  if (!slug || slug === 'index.html') {
-    window.location.href = '/';
-    return;
-  }
-
-  try {
-    // ambil database
-    const res = await fetch('/data.json?v=' + Date.now());
-    const data = await res.json();
-    
-    // cek localStorage juga (untuk link yang baru kamu buat)
-    const local = localStorage.getItem('appwus_db');
-    if (local) {
-      const localData = JSON.parse(local);
-      Object.assign(data, localData);
-    }
-
-    if (data[slug]) {
-      document.body.innerHTML = '<div style="text-align:center;margin-top:50px;font-family:sans-serif"><h2>Mengalihkan ke produk...</h2><p>'+data[slug]+'</p></div>';
-      window.location.replace(data[slug]);
-    } else {
-      document.body.innerHTML = '<div style="text-align:center;margin-top:50px;font-family:sans-serif"><h2>Link tidak ditemukan: /'+slug+'</h2><a href="/">Kembali ke home</a></div>';
-    }
-  } catch (e) {
-    document.body.innerHTML = '<h2>Gagal load data.json</h2>';
-  }
-}
-redirect();
-</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>appwus.com</title>
+<style>
+*{box-sizing:border-box;font-family:system-ui,sans-serif}
+body{margin:0;min-height:100vh;background:#0f172a;color:#fff;display:flex;align-items:center;justify-content:center;padding:20px}
+.card{background:#1e293b;width:100%;max-width:480px;padding:28px;border-radius:20px}
+h1{margin:0 0 6px;text-align:center;font-size:22px}
+.sub{text-align:center;color:#94a3b8;font-size:13px;margin-bottom:20px}
+input{width:100%;padding:13px;border-radius:10px;border:1px solid #334155;background:#0f172a;color:#fff;margin-bottom:10px}
+button{width:100%;padding:13px;border:none;border-radius:10px;background:#38bdf8;color:#0f172a;font-weight:700;cursor:pointer}
+.result{margin-top:14px;background:#0f172a;padding:12px;border-radius:10px;display:none;word-break:break-all}
+.item{display:flex;justify-content:space-between;background:#0f172a;padding:10px;border-radius:8px;margin-top:8px;font-size:13px}
+.hidden{display:none}
+</style>
 </head>
-<body></body>
+<body>
+<div class="card" id="loginBox">
+<h1>appwus.com</h1><div class="sub">Login Pribadi</div>
+<input type="password" id="kode" placeholder="Kode akses">
+<button onclick="login()">Masuk</button>
+<p id="err" style="color:#f87171;display:none;text-align:center">Kode salah</p>
+</div>
+
+<div class="card hidden" id="mainBox">
+<h1>Pemendek URL</h1><div class="sub">appwus.com - tanpa #</div>
+<input id="longUrl" placeholder="Paste URL marketplace">
+<input id="custom" placeholder="custom belakang, cth: sepatu-viral">
+<button onclick="buat()">Buat Link Pendek</button>
+<div class="result" id="result"></div>
+<div id="list"></div>
+<button onclick="logout()" style="margin-top:14px;background:#334155;color:#fff">Keluar</button>
+<div style="margin-top:12px"><button onclick="exportJSON()" style="background:#22c55e">Export data.json</button></div>
+<p style="font-size:11px;color:#64748b;margin-top:12px">* Setelah buat link, klik Export lalu upload data.json ke GitHub biar bisa dibuka orang lain.</p>
+</div>
+
+<script>
+const KODE="umarumir82";
+const DB_KEY="appwus_db";
+
+// Cek kalau buka appwus.com/sepatu-viral (dari index.html) - fallback
+(async()=>{
+  const slug = location.pathname.replace(/^\//,'').split('/')[0];
+  if(slug && slug!=='index.html' && slug!=='404.html'){
+    try{
+      const r = await fetch('/data.json?v='+Date.now());
+      const data = await r.json();
+      const local = JSON.parse(localStorage.getItem(DB_KEY)||'{}');
+      Object.assign(data, local);
+      if(data[slug]){ document.body.innerHTML='<h3 style=text-align:center>Mengalihkan...</h3>'; location.replace(data[slug]); }
+    }catch(e){}
+  }
+})();
+
+if(sessionStorage.getItem('appwus_login')==='1') showMain();
+
+function login(){
+  if(document.getElementById('kode').value===KODE){ sessionStorage.setItem('appwus_login','1'); showMain(); }
+  else document.getElementById('err').style.display='block';
+}
+function showMain(){
+  document.getElementById('loginBox').classList.add('hidden');
+  document.getElementById('mainBox').classList.remove('hidden');
+  render();
+}
+function logout(){ sessionStorage.removeItem('appwus_login'); location.reload(); }
+
+function buat(){
+  let long=document.getElementById('longUrl').value.trim();
+  let custom=document.getElementById('custom').value.trim().toLowerCase().replace(/\s+/g,'-');
+  if(!long||!custom){ alert('Isi lengkap'); return; }
+  if(!/^https?:\/\//.test(long)) long='https://'+long;
+  let db=JSON.parse(localStorage.getItem(DB_KEY)||'{}');
+  db[custom]=long;
+  localStorage.setItem(DB_KEY, JSON.stringify(db));
+  const short='https://appwus.com/'+custom;
+  const el=document.getElementById('result');
+  el.style.display='block';
+  el.innerHTML='Link pendek:<br><a href="'+short+'" style="color:#38bdf8" target="_blank">'+short+'</a><br><br><button onclick="navigator.clipboard.writeText(\''+short+'\')">Salin</button>';
+  document.getElementById('longUrl').value=''; document.getElementById('custom').value='';
+  render();
+}
+function render(){
+  let db=JSON.parse(localStorage.getItem(DB_KEY)||'{}');
+  let h='';
+  for(let k in db){ h+=`<div class="item"><span><b>/${k}</b><br><small style="color:#94a3b8">${db[k].slice(0,35)}...</small></span><span><button onclick="navigator.clipboard.writeText('https://appwus.com/${k}')" style="width:auto;padding:5px 8px">Salin</button> <button onclick="hapus('${k}')" style="width:auto;padding:5px 8px;background:#ef4444;color:#fff">X</button></span></div>`; }
+  document.getElementById('list').innerHTML=h||'<p style="text-align:center;color:#64748b;font-size:12px;margin-top:12px">Belum ada link</p>';
+}
+function hapus(k){ let db=JSON.parse(localStorage.getItem(DB_KEY)||'{}'); delete db[k]; localStorage.setItem(DB_KEY, JSON.stringify(db)); render(); }
+function exportJSON(){
+  let db=JSON.parse(localStorage.getItem(DB_KEY)||'{}');
+  const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='data.json'; a.click();
+}
+</script>
+</body>
 </html>
