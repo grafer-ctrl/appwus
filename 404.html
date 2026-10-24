@@ -1,42 +1,42 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>Redirecting...</title>
+<title>appwus.com</title>
 <script>
-// ambil slug setelah / 
-const slug = window.location.pathname.replace(/^\/+|\/+$/g, '').split('/')[0];
-
-async function redirect() {
-  if (!slug || slug === 'index.html') {
-    window.location.href = '/';
-    return;
-  }
-
-  try {
-    // ambil database
-    const res = await fetch('/data.json?v=' + Date.now());
-    const data = await res.json();
-    
-    // cek localStorage juga (untuk link yang baru kamu buat)
-    const local = localStorage.getItem('appwus_db');
-    if (local) {
-      const localData = JSON.parse(local);
-      Object.assign(data, localData);
-    }
-
-    if (data[slug]) {
-      document.body.innerHTML = '<div style="text-align:center;margin-top:50px;font-family:sans-serif"><h2>Mengalihkan ke produk...</h2><p>'+data[slug]+'</p></div>';
-      window.location.replace(data[slug]);
+  // ambil slug, contoh /sepatu-viral -> sepatu-viral
+  const path = window.location.pathname.replace(/\//g, '').trim();
+  
+  // kalau buka root appwus.com, jangan redirect, paksa load index.html
+  if (path === '' || path === 'index.html') {
+    // kalau ini file index.html tidak ada, arahkan manual
+    if (window.location.pathname === '/404.html') {
+       window.location.href = '/';
     } else {
-      document.body.innerHTML = '<div style="text-align:center;margin-top:50px;font-family:sans-serif"><h2>Link tidak ditemukan: /'+slug+'</h2><a href="/">Kembali ke home</a></div>';
+       // coba load index.html secara manual
+       fetch('/index.html').then(r=>r.text()).then(html=>{
+         document.open(); document.write(html); document.close();
+       });
     }
-  } catch (e) {
-    document.body.innerHTML = '<h2>Gagal load data.json</h2>';
+  } else {
+    // kalau ada slug /sepatu-viral, baru cari di data.json
+    fetch('/data.json?v='+Date.now())
+      .then(r=>r.json())
+      .then(data=>{
+        const local = localStorage.getItem('appwus_db');
+        if(local) Object.assign(data, JSON.parse(local));
+        
+        if(data[path]){
+          window.location.replace(data[path]);
+        } else {
+          document.body.innerHTML = '<div style="font-family:sans-serif;text-align:center;margin-top:80px"><h2>Link /'+path+' tidak ditemukan</h2><a href="/">Kembali ke Home</a></div>';
+        }
+      })
+      .catch(()=>{
+        document.body.innerHTML = '<h3 style="text-align:center">Gagal load data.json - cek file data.json kamu</h3>';
+      });
   }
-}
-redirect();
 </script>
 </head>
-<body></body>
+<body style="margin:0"></body>
 </html>
