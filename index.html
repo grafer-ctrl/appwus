@@ -3,97 +3,203 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>appwus.com</title>
+<title>appwus.com - Auto</title>
 <style>
 *{box-sizing:border-box;font-family:system-ui,sans-serif}
 body{margin:0;min-height:100vh;background:#0f172a;color:#fff;display:flex;align-items:center;justify-content:center;padding:20px}
-.card{background:#1e293b;width:100%;max-width:480px;padding:28px;border-radius:20px}
+.card{background:#1e293b;width:100%;max-width:500px;padding:28px;border-radius:20px;box-shadow:0 10px 40px rgba(0,0,0,.4)}
 h1{margin:0 0 6px;text-align:center;font-size:22px}
-.sub{text-align:center;color:#94a3b8;font-size:13px;margin-bottom:20px}
-input{width:100%;padding:13px;border-radius:10px;border:1px solid #334155;background:#0f172a;color:#fff;margin-bottom:10px}
-button{width:100%;padding:13px;border:none;border-radius:10px;background:#38bdf8;color:#0f172a;font-weight:700;cursor:pointer}
+.sub{text-align:center;color:#94a3b8;font-size:12px;margin-bottom:18px}
+label{font-size:12px;color:#94a3b8}
+input{width:100%;padding:12px;border-radius:10px;border:1px solid #334155;background:#0f172a;color:#fff;margin:6px 0 12px;outline:none}
+button{width:100%;padding:12px;border:none;border-radius:10px;background:#38bdf8;color:#0f172a;font-weight:700;cursor:pointer;margin-top:6px}
+button:disabled{opacity:.6;cursor:not-allowed}
+button.secondary{background:#334155;color:#fff}
 .result{margin-top:14px;background:#0f172a;padding:12px;border-radius:10px;display:none;word-break:break-all}
-.item{display:flex;justify-content:space-between;background:#0f172a;padding:10px;border-radius:8px;margin-top:8px;font-size:13px}
+.item{display:flex;justify-content:space-between;background:#0f172a;padding:10px;border-radius:8px;margin-top:8px;font-size:13px;align-items:center}
 .hidden{display:none}
+.log{font-size:11px;color:#94a3b8;margin-top:10px;white-space:pre-wrap;max-height:120px;overflow:auto;background:#0f172a;padding:8px;border-radius:8px}
 </style>
 </head>
 <body>
+
 <div class="card" id="loginBox">
-<h1>appwus.com</h1><div class="sub">Login Pribadi</div>
+<h1>appwus.com</h1><div class="sub">Login Pribadi - Auto Upload</div>
 <input type="password" id="kode" placeholder="Kode akses">
 <button onclick="login()">Masuk</button>
-<p id="err" style="color:#f87171;display:none;text-align:center">Kode salah</p>
+<p id="err" style="color:#f87171;display:none;text-align:center;font-size:13px">Kode salah</p>
+</div>
+
+<div class="card hidden" id="settingBox">
+<h1>Setting GitHub (1x saja)</h1><div class="sub">Agar bisa auto-upload tanpa manual</div>
+<label>Owner / Username GitHub</label>
+<input id="gh_owner" value="grafer-ctrl">
+<label>Nama Repo</label>
+<input id="gh_repo" value="appwus">
+<label>Personal Access Token (ghp_...)</label>
+<input id="gh_token" type="password" placeholder="ghp_xxxxxxxx">
+<button onclick="saveSetting()">Simpan & Lanjut</button>
+<p style="font-size:11px;color:#64748b;margin-top:10px">Token: github.com > Settings > Developer settings > Personal access tokens (classic) > Generate > centang repo. Token disimpan di browser kamu saja.</p>
+<div id="settingLog" class="log"></div>
 </div>
 
 <div class="card hidden" id="mainBox">
-<h1>Pemendek URL</h1><div class="sub">appwus.com - tanpa #</div>
-<input id="longUrl" placeholder="Paste URL marketplace">
-<input id="custom" placeholder="custom belakang, cth: sepatu-viral">
-<button onclick="buat()">Buat Link Pendek</button>
+<h1>Pemendek URL</h1><div class="sub">appwus.com - Auto Commit</div>
+
+<label>URL Marketplace Asli</label>
+<input id="longUrl" placeholder="https://shopee.co.id/...">
+
+<label>Custom Belakang</label>
+<input id="custom" placeholder="contoh: jam1">
+
+<button id="btnBuat" onclick="buatDanUpload()">Buat Link & Auto Upload ke GitHub</button>
+<div id="autoLog" class="log"></div>
+
 <div class="result" id="result"></div>
 <div id="list"></div>
-<button onclick="logout()" style="margin-top:14px;background:#334155;color:#fff">Keluar</button>
-<div style="margin-top:12px"><button onclick="exportJSON()" style="background:#22c55e">Export data.json</button></div>
-<p style="font-size:11px;color:#64748b;margin-top:12px">* Setelah buat link, klik Export lalu upload data.json ke GitHub biar bisa dibuka orang lain.</p>
+
+<button class="secondary" onclick="logout()" style="margin-top:14px">Keluar</button>
+<button class="secondary" onclick="resetSetting()" style="margin-top:6px;background:#1e293b;border:1px solid #334155">Ganti Token GitHub</button>
 </div>
 
 <script>
 const KODE="umarumir82";
 const DB_KEY="appwus_db";
+const SET_KEY="appwus_gh_setting";
 
-// Cek kalau buka appwus.com/sepatu-viral (dari index.html) - fallback
-(async()=>{
-  const slug = location.pathname.replace(/^\//,'').split('/')[0];
-  if(slug && slug!=='index.html' && slug!=='404.html'){
-    try{
-      const r = await fetch('/data.json?v='+Date.now());
-      const data = await r.json();
-      const local = JSON.parse(localStorage.getItem(DB_KEY)||'{}');
-      Object.assign(data, local);
-      if(data[slug]){ document.body.innerHTML='<h3 style=text-align:center>Mengalihkan...</h3>'; location.replace(data[slug]); }
-    }catch(e){}
-  }
-})();
-
-if(sessionStorage.getItem('appwus_login')==='1') showMain();
+if(sessionStorage.getItem('appwus_login')==='1'){
+  checkSetting();
+}
 
 function login(){
-  if(document.getElementById('kode').value===KODE){ sessionStorage.setItem('appwus_login','1'); showMain(); }
-  else document.getElementById('err').style.display='block';
+  if(document.getElementById('kode').value===KODE){
+    sessionStorage.setItem('appwus_login','1');
+    checkSetting();
+  }else{
+    document.getElementById('err').style.display='block';
+  }
 }
-function showMain(){
+function checkSetting(){
   document.getElementById('loginBox').classList.add('hidden');
-  document.getElementById('mainBox').classList.remove('hidden');
-  render();
+  const saved = JSON.parse(localStorage.getItem(SET_KEY)||'null');
+  if(!saved || !saved.token){
+    document.getElementById('settingBox').classList.remove('hidden');
+    document.getElementById('mainBox').classList.add('hidden');
+  }else{
+    document.getElementById('settingBox').classList.add('hidden');
+    document.getElementById('mainBox').classList.remove('hidden');
+    document.getElementById('gh_owner').value=saved.owner;
+    document.getElementById('gh_repo').value=saved.repo;
+    document.getElementById('gh_token').value=saved.token;
+    render();
+  }
+}
+function saveSetting(){
+  const owner=document.getElementById('gh_owner').value.trim();
+  const repo=document.getElementById('gh_repo').value.trim();
+  const token=document.getElementById('gh_token').value.trim();
+  if(!owner||!repo||!token){ alert('Lengkapi semua'); return; }
+  localStorage.setItem(SET_KEY, JSON.stringify({owner,repo,token}));
+  log('settingLog','Setting disimpan!');
+  setTimeout(checkSetting,500);
+}
+function resetSetting(){
+  if(confirm('Hapus token dan setting ulang?')){ localStorage.removeItem(SET_KEY); location.reload(); }
 }
 function logout(){ sessionStorage.removeItem('appwus_login'); location.reload(); }
+function log(id,msg){ const el=document.getElementById(id); el.textContent += '\n'+msg; el.scrollTop=el.scrollHeight; }
 
-function buat(){
+async function buatDanUpload(){
   let long=document.getElementById('longUrl').value.trim();
   let custom=document.getElementById('custom').value.trim().toLowerCase().replace(/\s+/g,'-');
-  if(!long||!custom){ alert('Isi lengkap'); return; }
+  if(!long||!custom){ alert('Isi URL dan custom'); return; }
   if(!/^https?:\/\//.test(long)) long='https://'+long;
+
+  const setting=JSON.parse(localStorage.getItem(SET_KEY)||'{}');
   let db=JSON.parse(localStorage.getItem(DB_KEY)||'{}');
+  if(db[custom]){ if(!confirm('Slug sudah ada, timpa?')) return; }
   db[custom]=long;
   localStorage.setItem(DB_KEY, JSON.stringify(db));
+  render();
+
   const short='https://appwus.com/'+custom;
   const el=document.getElementById('result');
   el.style.display='block';
-  el.innerHTML='Link pendek:<br><a href="'+short+'" style="color:#38bdf8" target="_blank">'+short+'</a><br><br><button onclick="navigator.clipboard.writeText(\''+short+'\')">Salin</button>';
-  document.getElementById('longUrl').value=''; document.getElementById('custom').value='';
-  render();
+  el.innerHTML='Link pendek:<br><a href="'+short+'" style="color:#38bdf8" target="_blank">'+short+'</a><br><br><button onclick="navigator.clipboard.writeText(\''+short+'\')">Salin Link</button>';
+
+  document.getElementById('autoLog').textContent='';
+  log('autoLog','Menyimpan ke GitHub...');
+  document.getElementById('btnBuat').disabled=true;
+
+  try{
+    // 1. get sha existing data.json
+    let sha=null;
+    try{
+      const getRes = await fetch(`https://api.github.com/repos/${setting.owner}/${setting.repo}/contents/data.json`, {
+        headers:{'Authorization':`token ${setting.token}`}
+      });
+      if(getRes.ok){ const j=await getRes.json(); sha=j.sha; log('autoLog','SHA lama: '+sha.slice(0,7)); }
+    }catch(e){}
+
+    // 2. upload new data.json
+    const contentStr = JSON.stringify(db,null,2);
+    const contentB64 = btoa(unescape(encodeURIComponent(contentStr)));
+
+    const putRes = await fetch(`https://api.github.com/repos/${setting.owner}/${setting.repo}/contents/data.json`, {
+      method:'PUT',
+      headers:{
+        'Authorization':`token ${setting.token}`,
+        'Content-Type':'application/json'
+      },
+      body: JSON.stringify({
+        message: `auto: add ${custom}`,
+        content: contentB64,
+        sha: sha
+      })
+    });
+
+    const result = await putRes.json();
+    if(putRes.ok){
+      log('autoLog','✅ Berhasil auto upload!');
+      log('autoLog','Tunggu 30-60 detik, lalu tes di HP: '+short);
+      document.getElementById('longUrl').value='';
+      document.getElementById('custom').value='';
+    }else{
+      log('autoLog','❌ Gagal: '+JSON.stringify(result));
+      alert('Gagal upload: '+(result.message||'cek token'));
+    }
+  }catch(err){
+    log('autoLog','❌ Error: '+err.message);
+    alert('Error: '+err.message);
+  }
+  document.getElementById('btnBuat').disabled=false;
 }
+
 function render(){
   let db=JSON.parse(localStorage.getItem(DB_KEY)||'{}');
   let h='';
-  for(let k in db){ h+=`<div class="item"><span><b>/${k}</b><br><small style="color:#94a3b8">${db[k].slice(0,35)}...</small></span><span><button onclick="navigator.clipboard.writeText('https://appwus.com/${k}')" style="width:auto;padding:5px 8px">Salin</button> <button onclick="hapus('${k}')" style="width:auto;padding:5px 8px;background:#ef4444;color:#fff">X</button></span></div>`; }
+  for(let k in db){ h+=`<div class="item"><span><b>/${k}</b><br><small style="color:#94a3b8">${db[k].slice(0,35)}...</small></span><span><button onclick="navigator.clipboard.writeText('https://appwus.com/${k}')" style="width:auto;padding:5px 8px;background:#38bdf8">Salin</button> <button onclick="hapus('${k}')" style="width:auto;padding:5px 8px;background:#ef4444;color:#fff">X</button></span></div>`; }
   document.getElementById('list').innerHTML=h||'<p style="text-align:center;color:#64748b;font-size:12px;margin-top:12px">Belum ada link</p>';
 }
-function hapus(k){ let db=JSON.parse(localStorage.getItem(DB_KEY)||'{}'); delete db[k]; localStorage.setItem(DB_KEY, JSON.stringify(db)); render(); }
-function exportJSON(){
-  let db=JSON.parse(localStorage.getItem(DB_KEY)||'{}');
-  const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='data.json'; a.click();
+async function hapus(k){
+  if(!confirm('Hapus /'+k+' ?')) return;
+  let db=JSON.parse(localStorage.getItem(DB_KEY)||'{}'); delete db[k]; localStorage.setItem(DB_KEY, JSON.stringify(db)); render();
+  // auto commit hapus juga
+  if(confirm('Auto hapus juga di GitHub?')){ document.getElementById('custom').value=k; /* trigger re-upload dengan db baru */ 
+    const setting=JSON.parse(localStorage.getItem(SET_KEY)||'{}');
+    let sha=null;
+    try{
+      const getRes = await fetch(`https://api.github.com/repos/${setting.owner}/${setting.repo}/contents/data.json`, { headers:{'Authorization':`token ${setting.token}`}});
+      if(getRes.ok){ const j=await getRes.json(); sha=j.sha; }
+    }catch(e){}
+    const contentB64 = btoa(unescape(encodeURIComponent(JSON.stringify(db,null,2))));
+    await fetch(`https://api.github.com/repos/${setting.owner}/${setting.repo}/contents/data.json`, {
+      method:'PUT',
+      headers:{'Authorization':`token ${setting.token}`,'Content-Type':'application/json'},
+      body: JSON.stringify({message:`auto: delete ${k}`, content:contentB64, sha:sha})
+    });
+    alert('Terhapus dari GitHub juga');
+  }
 }
 </script>
 </body>
