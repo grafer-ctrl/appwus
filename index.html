@@ -1,27 +1,42 @@
-<!doctype html>
-<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>appwus.com</title>
-<style>*{box-sizing:border-box}body{font:16px Arial,sans-serif;margin:0;color:#111;background:#fff}main{max-width:783px;margin:auto;padding:26px 40px}h1{text-align:center;font-size:17px;margin:0 0 45px}form{max-width:590px;margin:auto}input{border:1px solid #111;border-radius:17px;background:white;padding:24px;width:100%;font:600 16px Arial;min-height:76px;color:#111}input::placeholder{color:#111;opacity:1}#url{text-align:center}#slug{width:67%;margin-top:26px}button{cursor:pointer;background:white;border:1px solid #111;border-radius:10px;padding:11px 15px;font:inherit}button:hover{background:#eee}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.primary{background:#111;color:white}.primary:hover{background:#333}.hint{font-size:13px;line-height:1.6;color:#555}#message{min-height:24px;margin-top:16px}#list{margin-top:30px}.row{padding:15px 0;border-bottom:1px solid #ddd;overflow-wrap:anywhere}.row a{color:#111;font-weight:bold}.destination{font-size:13px;color:#555;margin:8px 0}.small{font-size:12px}#redirect{padding:35px;line-height:1.7}footer{margin-top:35px;color:#666;font-size:12px;line-height:1.6}@media(max-width:520px){main{padding:25px 20px}#slug{width:100%}h1{margin-bottom:35px}}</style></head><body>
-<script id="published-links" type="application/json">
-{
-  "MATA": "https://ganti-dengan-link-toko-atau-wa-anda.com"
-}
-</script>
-<div id="redirect" hidden></div><main id="app"><h1>appwus.com - Link Manager</h1><form id="form"><input id="url" type="url" placeholder="taruh url di sini" aria-label="URL tujuan" required><input id="slug" placeholder="custom nama belakang" aria-label="Nama pendek" maxlength="60" pattern="[A-Za-z0-9_-]+"><div class="actions"><button class="primary" type="submit">Pendekkan URL</button><button id="export" type="button">Unduh index.html publik</button></div><p class="hint">Nama opsional, misalnya: toko-saya. Huruf, angka, tanda - dan _ saja.<br>Link baru tersimpan di browser ini. Agar bisa dibuka orang lain, unduh index.html publik lalu unggah ulang ke GitHub Pages.</p></form><div id="message" role="status"></div><section id="list" aria-label="Daftar URL"></section><footer>Tanpa backend • Tanpa API • Redirect dengan #nama<br>Jangan simpan URL rahasia: daftar yang diterbitkan dapat dibaca pengunjung.</footer></main>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Redirecting...</title>
 <script>
-(()=>{'use strict';
-const $=id=>document.getElementById(id), base=location.href.split('#')[0].split('?')[0], key='linkini:v1:'+location.pathname;
-const published=JSON.parse($('published-links').textContent);let local={};
-const valid=u=>{try{const x=new URL(u);return ['https:','http:'].includes(x.protocol)&&!x.username&&!x.password}catch{return false}};
-try{local=JSON.parse(localStorage.getItem(key)||'{}')}catch{};
-if(!local||typeof local!=='object'||Array.isArray(local))local={};
-let links=Object.assign(Object.create(null),published,local);
-for(const [s,u] of Object.entries(links))if(!/^[A-Za-z0-9_-]{1,60}$/.test(s)||!valid(u))delete links[s];
-function message(t){$('message').textContent=t}
-function save(){try{localStorage.setItem(key,JSON.stringify(links));return true}catch{message('Penyimpanan browser tidak tersedia. Unduh index.html publik agar data tidak hilang.');return false}}
-function route(){if(!location.hash){$('app').hidden=false;$('redirect').hidden=true;return}let s;try{s=decodeURIComponent(location.hash.slice(1))}catch{s=''};$('app').hidden=true;$('redirect').hidden=false;$('redirect').replaceChildren();const title=document.createElement('h2');title.textContent=links[s]?'Membuka tujuan…':'Link tidak ditemukan';$('redirect').append(title);if(links[s]){if(links[s].split('#')[0].split('?')[0]===base){title.textContent='Redirect ke halaman ini sendiri diblokir.';return}const a=document.createElement('a');a.href=links[s];a.textContent='Klik jika tidak otomatis berpindah';$('redirect').append(a);location.replace(links[s])}else{const text=document.createElement('p');text.textContent='Link belum diterbitkan, sudah dihapus, atau hanya tersimpan di browser pembuat.';const a=document.createElement('a');a.href=base;a.textContent='Kembali ke beranda';$('redirect').append(text,a)}}
-function render(){const list=$('list');list.replaceChildren();if(!Object.keys(links).length){list.textContent='Belum ada URL yang dipendekkan.';return}for(const [s,u] of Object.entries(links).reverse()){const row=document.createElement('article');row.className='row';const a=document.createElement('a');a.href=base+'#'+s;a.textContent='- '+base+'#'+s;const d=document.createElement('div');d.className='destination';d.textContent=u;const copy=document.createElement('button');copy.textContent='Salin';copy.className='small';copy.onclick=async()=>{try{await navigator.clipboard.writeText(a.href);message('Link disalin. Untuk dibagikan, terbitkan data terbaru terlebih dahulu.')}catch{prompt('Salin link berikut:',a.href)}};row.append(a,d,copy);list.append(row)}}
-$('form').onsubmit=e=>{e.preventDefault();let u=$('url').value.trim();if(!valid(u)){message('Gunakan URL lengkap berawalan https:// atau http:// tanpa username/password.');return}if(u.split('#')[0].split('?')[0]===base){message('Tidak boleh mengarah ke halaman pemendek ini sendiri.');return}let s=$('slug').value.trim();if(!s){do{s=Array.from(crypto.getRandomValues(new Uint8Array(6)),v=>'abcdefghijklmnopqrstuvwxyz0123456789'[v%36]).join('')}while(Object.hasOwn(links,s))}if(!/^[A-Za-z0-9_-]{1,60}$/.test(s)){message('Nama tidak valid.');return}if(Object.hasOwn(links,s)){message('Nama tersebut sudah dipakai. Pilih nama lain.');return}links[s]=u;if(save())message('Berhasil dibuat. Unduh dan unggah index.html publik agar link bekerja di perangkat lain.');$('form').reset();render()};
-$('export').onclick=()=>{const doc=document.documentElement.cloneNode(true);doc.querySelector('#published-links').textContent=JSON.stringify(links).replace(/</g,'\u003c');doc.querySelector('#app').removeAttribute('hidden');doc.querySelector('#redirect').setAttribute('hidden','');doc.querySelector('#redirect').textContent='';doc.querySelector('#list').textContent='';doc.querySelector('#message').textContent='';doc.querySelectorAll('input').forEach(i=>i.removeAttribute('value'));const blob=new Blob(['<!doctype html>\n'+doc.outerHTML],{type:'text/html;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='index.html';a.click();setTimeout(()=>URL.revokeObjectURL(url),3000);message('File publik diunduh. Ganti index.html di repository dengan file tersebut. Semua mapping di dalamnya bersifat publik.')};
-window.addEventListener('hashchange',route);render();route();
-})();
-</script></body></html>
+// ambil slug setelah / 
+const slug = window.location.pathname.replace(/^\/+|\/+$/g, '').split('/')[0];
+
+async function redirect() {
+  if (!slug || slug === 'index.html') {
+    window.location.href = '/';
+    return;
+  }
+
+  try {
+    // ambil database
+    const res = await fetch('/data.json?v=' + Date.now());
+    const data = await res.json();
+    
+    // cek localStorage juga (untuk link yang baru kamu buat)
+    const local = localStorage.getItem('appwus_db');
+    if (local) {
+      const localData = JSON.parse(local);
+      Object.assign(data, localData);
+    }
+
+    if (data[slug]) {
+      document.body.innerHTML = '<div style="text-align:center;margin-top:50px;font-family:sans-serif"><h2>Mengalihkan ke produk...</h2><p>'+data[slug]+'</p></div>';
+      window.location.replace(data[slug]);
+    } else {
+      document.body.innerHTML = '<div style="text-align:center;margin-top:50px;font-family:sans-serif"><h2>Link tidak ditemukan: /'+slug+'</h2><a href="/">Kembali ke home</a></div>';
+    }
+  } catch (e) {
+    document.body.innerHTML = '<h2>Gagal load data.json</h2>';
+  }
+}
+redirect();
+</script>
+</head>
+<body></body>
+</html>
