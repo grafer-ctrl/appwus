@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Redirecting...</title>
+<script>
+// ambil slug setelah / 
+const slug = window.location.pathname.replace(/^\/+|\/+$/g, '').split('/')[0];
+
+async function redirect() {
+  if (!slug || slug === 'index.html') {
+    window.location.href = '/';
+    return;
+  }
+
+  try {
+    // ambil database
+    const res = await fetch('/data.json?v=' + Date.now());
+    const data = await res.json();
+    
+    // cek localStorage juga (untuk link yang baru kamu buat)
+    const local = localStorage.getItem('appwus_db');
+    if (local) {
+      const localData = JSON.parse(local);
+      Object.assign(data, localData);
+    }
+
+    if (data[slug]) {
+      document.body.innerHTML = '<div style="text-align:center;margin-top:50px;font-family:sans-serif"><h2>Mengalihkan ke produk...</h2><p>'+data[slug]+'</p></div>';
+      window.location.replace(data[slug]);
+    } else {
+      document.body.innerHTML = '<div style="text-align:center;margin-top:50px;font-family:sans-serif"><h2>Link tidak ditemukan: /'+slug+'</h2><a href="/">Kembali ke home</a></div>';
+    }
+  } catch (e) {
+    document.body.innerHTML = '<h2>Gagal load data.json</h2>';
+  }
+}
+redirect();
+</script>
+</head>
+<body></body>
+</html>
